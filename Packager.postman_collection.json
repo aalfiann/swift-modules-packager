@@ -1,0 +1,181 @@
+{
+	"info": {
+		"_postman_id": "0cbc5bc7-222c-43fe-88f6-8fac0974e09a",
+		"name": "Packager Swift",
+		"description": "API Documentation about Packager Module.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Info Module",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:1337/swift/packager/get/info",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"swift",
+						"packager",
+						"get",
+						"info"
+					]
+				},
+				"description": "Get Info Module\n---\nGet info detail about Packager Module"
+			},
+			"response": []
+		},
+		{
+			"name": "Show All Modules",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:1337/swift/api/packager/show/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"swift",
+						"api",
+						"packager",
+						"show",
+						"all"
+					]
+				},
+				"description": "Show All Modules\n---\nThis will show all data modules installed in swift."
+			},
+			"response": []
+		},
+		{
+			"name": "Install Module Zip",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:1337/api/packager/install/zip?lang=en&source={zip archive source}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"api",
+						"packager",
+						"install",
+						"zip"
+					],
+					"query": [
+						{
+							"key": "lang",
+							"value": "en"
+						},
+						{
+							"key": "source",
+							"value": "{zip archive source}"
+						}
+					]
+				},
+				"description": "Install Module Zip\n---\nThis will install module with source link of the archive zip.\n\nNote:\n---\n- Source archive link must be right formatted\n- Faster but not safe, this may damage your app."
+			},
+			"response": []
+		},
+		{
+			"name": "Install Module Zip Safely",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:1337/swift/api/packager/install/zip/safely?lang=en&namespace={namespace module}&source={zip archive source}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"swift",
+						"api",
+						"packager",
+						"install",
+						"zip",
+						"safely"
+					],
+					"query": [
+						{
+							"key": "lang",
+							"value": "en"
+						},
+						{
+							"key": "namespace",
+							"value": "{namespace module}"
+						},
+						{
+							"key": "source",
+							"value": "{zip archive source}"
+						}
+					]
+				},
+				"description": "Install Module Zip Safely\n---\nThis will install module with source link of the archive zip and require right namespace.\n\nNote:\n---\n- This is require namespace which is more safely"
+			},
+			"response": []
+		},
+		{
+			"name": "Uninstall Module",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:1337/api/packager/uninstall?lang=en&namespace={namespace module}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"api",
+						"packager",
+						"uninstall"
+					],
+					"query": [
+						{
+							"key": "lang",
+							"value": "en"
+						},
+						{
+							"key": "namespace",
+							"value": "{namespace module}"
+						}
+					]
+				},
+				"description": "Uninstall Module\n---\nThis will remove the module.\n\nNote:\n- This is not delete the database of the module\n- This is only delete the script on the server."
+			},
+			"response": []
+		}
+	]
+}

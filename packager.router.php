@@ -26,6 +26,32 @@ use \DavidePastore\Slim\Validation\Validation;
         ->add(new UserAuth)
         ->add(new SessionCheck($container));
 
+    // Get module information from readme
+    $app->map(['GET','OPTIONS'],'/packager/get/readme', function (Request $request, Response $response) {
+        $namespace = (!empty($_GET['namespace'])?$_GET['namespace']:'');
+        $pc = new Packager();
+        $body = $response->getBody();
+        $body->write($pc->getPackageReadme($namespace));
+        return $response->withStatus(200)
+        ->withHeader('Content-Type','text/markdown; charset=UTF-8')
+        ->withBody($body);
+    })->setName("/packager/get/readme")
+        ->add(new UserAuth)
+        ->add(new SessionCheck($container));
+
+    // Get module license information
+    $app->map(['GET','OPTIONS'],'/packager/get/license', function (Request $request, Response $response) {
+        $namespace = (!empty($_GET['namespace'])?$_GET['namespace']:'');
+        $pc = new Packager();
+        $body = $response->getBody();
+        $body->write($pc->getPackageLicense($namespace));
+        return $response->withStatus(200)
+        ->withHeader('Content-Type','text/markdown; charset=UTF-8')
+        ->withBody($body);
+    })->setName("/packager/get/readme")
+        ->add(new UserAuth)
+        ->add(new SessionCheck($container));
+
     // Show All Installed Packages
     $app->get('/packager/show/all', function (Request $request, Response $response) {
         $pc = new Packager();

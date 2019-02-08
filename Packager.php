@@ -163,7 +163,7 @@ namespace modules\packager;                         //Make sure namespace is sam
                 $compatible = (version_compare(SWIFT_VERSION, $mods->package->require->swift, ">=")?true:false);
                 $dependency = (isset($mods->package->dependency)?$this->isDependencyExists($mods->package->dependency,$listmodules):true);
                 $readme = str_replace(DIRECTORY_SEPARATOR.'package.json','',realpath($pack)).'/README.md';
-                $readmeurl = (($this->isHttps())?'https://':'http://').$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['PHP_SELF'])).'/'.basename($this->dirname_r(__FILE__,2)).'/'.basename(dirname($pack)).'/README.md';
+                $readmeurl = (($this->isHttps())?'https://':'http://').$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['PHP_SELF'])).'/packager/get/readme?namespace='.basename(dirname($pack));
                 $folder[] = [
                     'date' => date('Y-m-d H:m:s',filectime($pack)),
                     'namespace' => basename($this->dirname_r(__FILE__,2)).'/'.basename(dirname($pack)),
@@ -233,7 +233,7 @@ namespace modules\packager;                         //Make sure namespace is sam
                     $zip = new \ZipArchive;
                     $res = $zip->open($destination);
                     if ($res === TRUE) {
-                        $zip->extractTo(dirname($this->basemod,1).'/');
+                        $zip->extractTo($this->dirname_r($this->basemod,1).'/');
                         $zip->close();
                         unlink($destination);
                         $data = [
@@ -246,7 +246,7 @@ namespace modules\packager;                         //Make sure namespace is sam
                             'status' => 'error',
                             'code' => 'PC201',
                             'message' => Dictionary::write('PC201',$this->lang),
-                            'path' => dirname($this->basemod,1),
+                            'path' => $this->dirname_r($this->basemod,1),
                             'base' => $this->basemod
                         ];
                     }
@@ -276,21 +276,21 @@ namespace modules\packager;                         //Make sure namespace is sam
                     $zip = new \ZipArchive;
                     $res = $zip->open($destination);
                     if ($res === TRUE) {
-                        $folderpath = dirname($this->basemod,1).'/tmp';
+                        $folderpath = $this->dirname_r($this->basemod,1).'/tmp';
                         $zip->extractTo($folderpath);
                         $directories = scandir($folderpath);
                         if (count($directories) ==3){
                             foreach($directories as $directory){
                                 if($directory !='.' and $directory != '..'){
                                     if(is_dir($folderpath.'/'.$directory)){
-                                        $this->rcopy($folderpath.'/'.$directory,dirname($this->basemod,1).'/'.$namespaces);
+                                        $this->rcopy($folderpath.'/'.$directory,$this->dirname_r($this->basemod,1).'/'.$namespaces);
                                     }
                                 }
                             }
                             $data = [
                                 'status' => 'success',
                                 'code' => 'PC101',
-                                'path' => dirname($this->basemod,1).'/'.$namespaces,
+                                'path' => $this->dirname_r($this->basemod,1).'/'.$namespaces,
                                 'message' => Dictionary::write('PC101',$this->lang)
                             ];
                         } else {
@@ -308,7 +308,7 @@ namespace modules\packager;                         //Make sure namespace is sam
                             'status' => 'error',
                             'code' => 'PC201',
                             'message' => Dictionary::write('PC201',$this->lang),
-                            'path' => dirname($this->basemod,1),
+                            'path' => $this->dirname_r($this->basemod,1),
                             'base' => $this->basemod
                         ];
                     }
@@ -319,7 +319,7 @@ namespace modules\packager;                         //Make sure namespace is sam
         public function uninstallPackage($namespaces){
             $namespaces = str_replace('modules/','',$namespaces);
             
-            $this->rrmdir(dirname($this->basemod,1).'/'.$namespaces);
+            $this->rrmdir($this->dirname_r($this->basemod,1).'/'.$namespaces);
                     $data = [
                         'status' => 'success',
                         'code' => 'PC102',
@@ -328,5 +328,38 @@ namespace modules\packager;                         //Make sure namespace is sam
                     ];
 
             return $data;
+        }
+
+        public function getPackageDir($namespaces){
+            $namespaces = str_replace('modules/','',$namespaces);
+            $dir = $this->dirname_r($this->basemod,1).'/'.$namespaces;
+
+            return $dir;
+        }
+
+        public function getPackageReadme($namespaces){
+            $path = $this->getPackageDir($namespaces).DIRECTORY_SEPARATOR.'README.md';
+            if(is_file($path)) {
+                $contents = '';
+                $file = fopen($path, 'r');
+                $size = filesize($path);
+                if($size > 0) $contents = fread($file, $size);
+                fclose($file);
+                return $contents;
+            }
+            return 'Sorry, File not found!';
+        }
+
+        public function getPackageLicense($namespaces){
+            $path = $this->getPackageDir($namespaces).DIRECTORY_SEPARATOR.'LICENSE.md';
+            if(is_file($path)) {
+                $contents = '';
+                $file = fopen($path, 'r');
+                $size = filesize($path);
+                if($size > 0) $contents = fread($file, $size);
+                fclose($file);
+                return $contents;
+            }
+            return 'Sorry, File not found!';
         }
     }

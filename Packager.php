@@ -220,6 +220,8 @@ namespace modules\packager;                         //Make sure namespace is sam
                     curl_setopt($ch, CURLOPT_URL, $source);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
                     $data = curl_exec ($ch);
                     curl_close ($ch);
 
@@ -233,7 +235,7 @@ namespace modules\packager;                         //Make sure namespace is sam
                     $zip = new \ZipArchive;
                     $res = $zip->open($destination);
                     if ($res === TRUE) {
-                        $zip->extractTo($this->dirname_r($this->basemod,1).'/');
+                        $zip->extractTo($this->dirname_r($this->basemod,1).DIRECTORY_SEPARATOR);
                         $zip->close();
                         unlink($destination);
                         $data = [
@@ -263,6 +265,8 @@ namespace modules\packager;                         //Make sure namespace is sam
                     curl_setopt($ch, CURLOPT_URL, $source);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
                     $data = curl_exec ($ch);
                     curl_close ($ch);
 
@@ -276,14 +280,14 @@ namespace modules\packager;                         //Make sure namespace is sam
                     $zip = new \ZipArchive;
                     $res = $zip->open($destination);
                     if ($res === TRUE) {
-                        $folderpath = $this->dirname_r($this->basemod,1).'/tmp';
+                        $folderpath = $this->dirname_r($this->basemod,1).DIRECTORY_SEPARATOR.'tmp';
                         $zip->extractTo($folderpath);
                         $directories = scandir($folderpath);
                         if (count($directories) ==3){
                             foreach($directories as $directory){
                                 if($directory !='.' and $directory != '..'){
-                                    if(is_dir($folderpath.'/'.$directory)){
-                                        $this->rcopy($folderpath.'/'.$directory,$this->dirname_r($this->basemod,1).'/'.$namespaces);
+                                    if(is_dir($folderpath.DIRECTORY_SEPARATOR.$directory)){
+                                        $this->rcopy($folderpath.DIRECTORY_SEPARATOR.$directory,$this->dirname_r($this->basemod,1).DIRECTORY_SEPARATOR.$namespaces);
                                     }
                                 }
                             }

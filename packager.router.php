@@ -5,13 +5,12 @@ use \Psr\Http\Message\ResponseInterface as Response;            //PSR7 ResponseI
 
 //Define your modules class
 use \modules\packager\Packager as Packager;                     //Your main modules class
+use \modules\packager\PackagerValidator as validator;
 
 use \modules\session\middleware\SessionCheck;
-//use \modules\session\helper\SessionHelper;
 use \modules\session\twig\SessionTwigExtension;
 
 use \modules\user\middleware\UserAuth;
-use \modules\user\UserValidator as validator;
 use \DavidePastore\Slim\Validation\Validation;
 
     // Get module information
@@ -20,8 +19,8 @@ use \DavidePastore\Slim\Validation\Validation;
         $body = $response->getBody();
         $body->write($pc->viewInfo());
         return $response->withStatus(200)
-        ->withHeader('Content-Type','application/json; charset=utf-8')
-        ->withBody($body);
+            ->withHeader('Content-Type','application/json; charset=utf-8')
+            ->withBody($body);
     })->setName("/packager/get/info")
         ->add(new UserAuth)
         ->add(new SessionCheck($container));
@@ -33,8 +32,8 @@ use \DavidePastore\Slim\Validation\Validation;
         $body = $response->getBody();
         $body->write($pc->getPackageReadme($namespace));
         return $response->withStatus(200)
-        ->withHeader('Content-Type','text/markdown; charset=UTF-8')
-        ->withBody($body);
+            ->withHeader('Content-Type','text/markdown; charset=UTF-8')
+            ->withBody($body);
     })->setName("/packager/get/readme")
         ->add(new UserAuth)
         ->add(new SessionCheck($container));
@@ -46,8 +45,8 @@ use \DavidePastore\Slim\Validation\Validation;
         $body = $response->getBody();
         $body->write($pc->getPackageLicense($namespace));
         return $response->withStatus(200)
-        ->withHeader('Content-Type','text/markdown; charset=UTF-8')
-        ->withBody($body);
+            ->withHeader('Content-Type','text/markdown; charset=UTF-8')
+            ->withBody($body);
     })->setName("/packager/get/readme")
         ->add(new UserAuth)
         ->add(new SessionCheck($container));
@@ -58,8 +57,8 @@ use \DavidePastore\Slim\Validation\Validation;
         $body = $response->getBody();
         $body->write(json_encode($pc->showAll()));
         return $response->withStatus(200)
-        ->withHeader('Content-Type','application/json; charset=utf-8')
-        ->withBody($body);
+            ->withHeader('Content-Type','application/json; charset=utf-8')
+            ->withBody($body);
     })->setName("/packager/show/all")
         ->add(new UserAuth)
         ->add(new SessionCheck($container));
@@ -69,11 +68,22 @@ use \DavidePastore\Slim\Validation\Validation;
     $app->get('/packager/install/zip', function (Request $request, Response $response) {
         $pc = new Packager();
         $body = $response->getBody();
-        $body->write(json_encode($pc->installFromZip($_GET['source'],'')));
+        if($request->getAttribute('has_errors')){
+            $errors = $request->getAttribute('errors');
+            $data = [
+                'status' => 'error',
+                'message' => 'Parameter is not valid! ',
+                'problem' => json_encode($errors)
+            ];
+            $body->write(json_encode($data));
+        } else {
+            $body->write(json_encode($pc->installFromZip($_GET['source'],'')));
+        }
         return $response->withStatus(200)
-        ->withHeader('Content-Type','application/json; charset=utf-8')
-        ->withBody($body);
+            ->withHeader('Content-Type','application/json; charset=utf-8')
+            ->withBody($body);
     })->setName("/packager/install/zip")
+        ->add(new Validation(validator::install()))
         ->add(new UserAuth)
         ->add(new SessionCheck($container));
 
@@ -81,11 +91,22 @@ use \DavidePastore\Slim\Validation\Validation;
     $app->get('/packager/install/zip/safely', function (Request $request, Response $response) {
         $pc = new Packager();
         $body = $response->getBody();
-        $body->write(json_encode($pc->installFromZipSafely($_GET['source'],$_GET['namespace'])));
+        if($request->getAttribute('has_errors')){
+            $errors = $request->getAttribute('errors');
+            $data = [
+                'status' => 'error',
+                'message' => 'Parameter is not valid! ',
+                'problem' => json_encode($errors)
+            ];
+            $body->write(json_encode($data));
+        } else {
+            $body->write(json_encode($pc->installFromZipSafely($_GET['source'],$_GET['namespace'])));
+        }
         return $response->withStatus(200)
-        ->withHeader('Content-Type','application/json; charset=utf-8')
-        ->withBody($body);
+            ->withHeader('Content-Type','application/json; charset=utf-8')
+            ->withBody($body);
     })->setName("/packager/install/zip/safely")
+        ->add(new Validation(validator::installsafely()))
         ->add(new UserAuth)
         ->add(new SessionCheck($container));
 
@@ -93,11 +114,22 @@ use \DavidePastore\Slim\Validation\Validation;
     $app->get('/packager/uninstall', function (Request $request, Response $response) {
         $pc = new Packager();
         $body = $response->getBody();
-        $body->write(json_encode($pc->uninstallPackage($_GET['namespace'])));
+        if($request->getAttribute('has_errors')){
+            $errors = $request->getAttribute('errors');
+            $data = [
+                'status' => 'error',
+                'message' => 'Parameter is not valid! ',
+                'problem' => json_encode($errors)
+            ];
+            $body->write(json_encode($data));
+        } else {
+            $body->write(json_encode($pc->uninstallPackage($_GET['namespace'])));
+        }
         return $response->withStatus(200)
-        ->withHeader('Content-Type','application/json; charset=utf-8')
-        ->withBody($body);
+            ->withHeader('Content-Type','application/json; charset=utf-8')
+            ->withBody($body);
     })->setName("/packager/uninstall")
+        ->add(new Validation(validator::uninstall()))
         ->add(new UserAuth)
         ->add(new SessionCheck($container));
 

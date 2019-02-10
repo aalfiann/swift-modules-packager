@@ -7,7 +7,7 @@
         "require": {
             "swift": "1.0.0"
         },
-        "dependency": [],
+        "dependency": ["modules/session","modules/user"],
         "installer": false,
         "type": "package",
         "license": {

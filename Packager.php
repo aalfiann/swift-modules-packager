@@ -133,7 +133,8 @@ namespace modules\packager;                         //Make sure namespace is sam
                 $dp = count($dependency);
                 for ($i=0;$i<$dp;$i++){
                     foreach($folders as $folder){
-                        if ($folder == str_replace('modules/','',$dependency[$i])){
+                        $dependency[$i] = str_replace('/',DIRECTORY_SEPARATOR,$dependency[$i]);
+                        if ($folder == str_replace(['modules'],'',$dependency[$i])){
                             $c++;  
                         }
                     }
@@ -142,7 +143,8 @@ namespace modules\packager;                         //Make sure namespace is sam
                 if (empty($dependency)) return true;
                 $dp = 1;
                 foreach($folders as $folder){
-                    if ($folder == str_replace('modules/','',$dependency)){
+                    $dependency = str_replace('/',DIRECTORY_SEPARATOR,$dependency);
+                    if ($folder == str_replace(['modules'],'',$dependency)){
                         $c++;
                     }
                 }
@@ -156,7 +158,7 @@ namespace modules\packager;                         //Make sure namespace is sam
             
             // Scan all packages
             $packs = $this->fileSearch('../modules/','package.json');
-            $listmodules = str_replace(['../modules/','/package.json'],'',$packs);
+            $listmodules = str_replace(['../modules/',DIRECTORY_SEPARATOR.'package.json'],'',$packs);
             foreach ($packs as $pack) {
                 $mods = json_decode(file_get_contents($pack));
                 $size = $this->GetDirectorySize(str_replace(DIRECTORY_SEPARATOR.'package.json','',realpath($pack)));

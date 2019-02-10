@@ -134,7 +134,7 @@ namespace modules\packager;                         //Make sure namespace is sam
                 for ($i=0;$i<$dp;$i++){
                     foreach($folders as $folder){
                         $dependency[$i] = str_replace('/',DIRECTORY_SEPARATOR,$dependency[$i]);
-                        if ($folder == str_replace(['modules'],'',$dependency[$i])){
+                        if ($folder == str_replace('modules','',$dependency[$i])){
                             $c++;  
                         }
                     }
@@ -144,7 +144,7 @@ namespace modules\packager;                         //Make sure namespace is sam
                 $dp = 1;
                 foreach($folders as $folder){
                     $dependency = str_replace('/',DIRECTORY_SEPARATOR,$dependency);
-                    if ($folder == str_replace(['modules'],'',$dependency)){
+                    if ($folder == str_replace('modules','',$dependency)){
                         $c++;
                     }
                 }
